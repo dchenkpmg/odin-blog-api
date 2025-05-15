@@ -1,0 +1,39 @@
+{
+  "name": "odin-blog-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dchenkpmg/odin-inventory-application.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dchenkpmg/odin-inventory-application/issues"
+  },
+  "homepage": "https://github.com/dchenkpmg/odin-inventory-application#readme",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
+    "@quixo3/prisma-session-store": "^3.1.13",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "passport": "^0.7.0",
+    "pg": "^8.15.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prisma": "^6.7.0"
+  },
+  "nodemonConfig": {
+    "ext": "js"
+  }
+}
