@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,11 +14,12 @@ datasource db {
 }
 
 model Users {
-  id       Int     @id @default(autoincrement())
-  username String  @unique
+  id       Int        @id @default(autoincrement())
+  username String     @unique
   password String
-  isAdmin  Boolean @default(false)
+  isAdmin  Boolean    @default(false)
   posts    Posts[]
+  comments Comments[]
 
   @@map("users")
 }
@@ -30,6 +30,7 @@ model Posts {
   content   String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  published Boolean    @default(false)
   comments  Comments[]
   author    Users      @relation(fields: [authorId], references: [id])
   authorId  Int
@@ -39,6 +40,8 @@ model Posts {
 
 model Comments {
   id        Int      @id @default(autoincrement())
+  authorId  Int
+  author    Users    @relation(fields: [authorId], references: [id])
   postId    Int
   posts     Posts    @relation(fields: [postId], references: [id])
   content   String
