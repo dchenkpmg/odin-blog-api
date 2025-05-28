@@ -1,4 +1,6 @@
 const jsonwebtoken = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs");
 
 const pathToKey = path.join(__dirname, "id_rsa_priv.pem");
 

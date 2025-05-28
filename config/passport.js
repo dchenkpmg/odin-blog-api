@@ -3,6 +3,8 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 const fs = require("fs");
 const path = require("path");
 const { PrismaClient } = require("@prisma/client");
+const { bcrypt } = require("bcryptjs");
+const passport = require("passport");
 
 const pathToKey = path.join(__dirname, "id_rsa_pub.pem");
 
