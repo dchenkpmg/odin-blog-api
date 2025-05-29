@@ -7,6 +7,7 @@ const utils = require("../config/utils");
 const prisma = new PrismaClient();
 
 async function adminRegister(req, res, next) {
+  console.log("Admin registration request received:", req.body);
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -22,7 +23,7 @@ async function adminRegister(req, res, next) {
     await db.createUser(
       req.body.username,
       hashedPassword,
-      req.body.adminCode === process.env.ADMIN_CODE ? true : false,
+      req.body.adminCode === process.env.ADMIN_CODE ? true : false, // undefined === undefined
     );
     if (req.body.adminCode === process.env.ADMIN_CODE) {
       return res.status(200).json({ message: "Admin registered successfully" });
@@ -35,6 +36,7 @@ async function adminRegister(req, res, next) {
 }
 
 async function adminLogin(req, res, next) {
+  console.log(`Logging in user ${req.body.username}...`);
   try {
     const existingUser = await prisma.users.findUnique({
       where: { username: req.body.username },
@@ -51,7 +53,7 @@ async function adminLogin(req, res, next) {
     }
     const tokenObject = utils.issueJWT(existingUser);
     res.status(200).json({
-      success: true,
+      userId: existingUser.id,
       token: tokenObject.token,
       expiresIn: tokenObject.expires,
     });

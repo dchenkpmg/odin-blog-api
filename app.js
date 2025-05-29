@@ -7,6 +7,8 @@ const adminRouter = require("./routes/admin");
 
 const app = express();
 
+console.log("App is starting...");
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());

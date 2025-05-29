@@ -3,12 +3,13 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 const fs = require("fs");
 const path = require("path");
 const { PrismaClient } = require("@prisma/client");
-const { bcrypt } = require("bcryptjs");
 const passport = require("passport");
 
 const pathToKey = path.join(__dirname, "id_rsa_pub.pem");
 
 const PUB_KEY = fs.readFileSync(pathToKey, "utf8");
+
+const prisma = new PrismaClient();
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -17,29 +18,17 @@ const options = {
 };
 
 passport.use(
-  new JwtStrategy(options, async (username, password, done) => {
-    const prisma = new PrismaClient();
+  new JwtStrategy(options, async (token, done) => {
     try {
-      console.log("Authenticating user with payload:", payload);
       const user = await prisma.users.findUnique({
-        where: {
-          username: username,
-        },
+        where: { id: token.sub },
       });
       if (!user) {
-        return done(null, false, {
-          message: "Username or Password is incorrect",
-        });
-      }
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        return done(null, false, {
-          message: "Username or Password is incorrect",
-        });
+        return done(null, false);
       }
       return done(null, user);
     } catch (error) {
-      console.error("Error authenticating user:", error);
+      console.error("Error in JWT strategy:", error);
       return done(error, false);
     }
   }),

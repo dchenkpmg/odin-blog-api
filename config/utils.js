@@ -8,11 +8,11 @@ const PRIV_KEY = fs.readFileSync(pathToKey, "utf8");
 
 function issueJWT(user) {
   const id = user.id;
-  const expiresIn = "1d";
+  const expiresIn = 60 * 60;
 
   const payload = {
     sub: id,
-    iat: Date.now(),
+    iat: Math.floor(Date.now() / 1000), // issued at time
   };
 
   const signedToken = jsonwebtoken.sign(payload, PRIV_KEY, {
@@ -21,7 +21,7 @@ function issueJWT(user) {
   });
 
   return {
-    token: "Bearer " + signedToken,
+    token: signedToken,
     expires: expiresIn,
   };
 }
