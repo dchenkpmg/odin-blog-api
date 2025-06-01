@@ -4,6 +4,8 @@ const express = require("express");
 const cors = require("cors");
 
 const adminRouter = require("./routes/admin");
+const postRouter = require("./routes/post");
+const commentRouter = require("./routes/comment");
 
 const app = express();
 
@@ -16,7 +18,7 @@ app.use(cors());
 require("./config/passport");
 
 app.use("/admin", adminRouter);
-// app.use("/", indexRouter);
+app.use("/", postRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

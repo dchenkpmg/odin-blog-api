@@ -1,10 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
 const db = require("../db/db");
 const { validationResult } = require("express-validator");
 const utils = require("../config/utils");
-
-const prisma = new PrismaClient();
 
 async function adminRegister(req, res, next) {
   console.log("Admin registration request received:", req.body);
@@ -13,9 +10,7 @@ async function adminRegister(req, res, next) {
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    const existingUser = await prisma.users.findUnique({
-      where: { username: req.body.username },
-    });
+    const existingUser = await db.getUserByUsername(req.body.username);
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -23,7 +18,7 @@ async function adminRegister(req, res, next) {
     await db.createUser(
       req.body.username,
       hashedPassword,
-      req.body.adminCode === process.env.ADMIN_CODE ? true : false, // undefined === undefined
+      req.body.adminCode === process.env.ADMIN_CODE ? true : false,
     );
     if (req.body.adminCode === process.env.ADMIN_CODE) {
       return res.status(200).json({ message: "Admin registered successfully" });
@@ -38,9 +33,7 @@ async function adminRegister(req, res, next) {
 async function adminLogin(req, res, next) {
   console.log(`Logging in user ${req.body.username}...`);
   try {
-    const existingUser = await prisma.users.findUnique({
-      where: { username: req.body.username },
-    });
+    const existingUser = await db.getUserByUsername(req.body.username);
     if (!existingUser) {
       return res.status(400).json({ message: "Username or Password is wrong" });
     }

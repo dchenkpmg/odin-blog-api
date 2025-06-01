@@ -25,6 +25,8 @@ passport.use(
       });
       if (!user) {
         return done(null, false);
+      } else if (!user.isAdmin) {
+        return done(null, false, { message: "Unauthorised access" });
       }
       return done(null, user);
     } catch (error) {
