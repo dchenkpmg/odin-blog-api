@@ -76,6 +76,21 @@ async function createPost({ title, content, userId, published }) {
   });
 }
 
+async function updatePost(postId, title, content, published) {
+  console.log(`Editing post ID: ${postId}`);
+  console.log(
+    `Editing post: ${title}, content: ${content}, published: ${published}`,
+  );
+  return await prisma.posts.update({
+    where: { id: postId },
+    data: {
+      title: title,
+      content: content,
+      published: published,
+    },
+  });
+}
+
 module.exports = {
   createUser,
   getUserByUsername,
@@ -83,4 +98,5 @@ module.exports = {
   getPostById,
   getCommentsByPostId,
   createPost,
+  updatePost,
 };

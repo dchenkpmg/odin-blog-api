@@ -35,6 +35,21 @@ async function addPost(req, res, next) {
   }
 }
 
+async function editPost(req, res, next) {
+  try {
+    const postId = parseInt(req.params.id);
+    const { title, content, published } = req.body;
+    const post = await db.updatePost(postId, title, content, published);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.status(200).json({ message: "Post updated successfully", post });
+  } catch (err) {
+    console.error("Error editing post:", err);
+    next(err);
+  }
+}
+
 async function getPostById(req, res, next) {
   try {
     const postId = parseInt(req.params.id);
@@ -77,4 +92,5 @@ module.exports = {
   getPostById,
   getCommentsByPostId,
   addPost,
+  editPost,
 };
