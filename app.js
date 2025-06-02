@@ -5,7 +5,6 @@ const cors = require("cors");
 
 const adminRouter = require("./routes/admin");
 const postRouter = require("./routes/post");
-const commentRouter = require("./routes/comment");
 
 const app = express();
 

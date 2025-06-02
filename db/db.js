@@ -32,8 +32,55 @@ async function getPosts() {
   });
   return posts;
 }
+
+async function getPostById(postId) {
+  console.log(`Fetching post by ID: ${postId}`);
+  return await prisma.posts.findUnique({
+    where: { id: postId },
+    include: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+}
+
+async function getCommentsByPostId(postId) {
+  console.log(`Fetching comments for post ID: ${postId}`);
+  const comments = await prisma.comments.findMany({
+    where: { postId: postId },
+    include: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+  return comments;
+}
+
+async function createPost({ title, content, userId, published }) {
+  console.log(`Adding post: ${title}`);
+  return await prisma.posts.create({
+    data: {
+      title: title,
+      content: content,
+      published: published,
+      author: {
+        connect: { id: userId },
+      },
+    },
+  });
+}
+
 module.exports = {
   createUser,
   getUserByUsername,
   getPosts,
+  getPostById,
+  getCommentsByPostId,
+  createPost,
 };
