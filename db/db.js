@@ -91,6 +91,33 @@ async function updatePost(postId, title, content, published) {
   });
 }
 
+async function deletePost(postId) {
+  console.log(`Deleting post ID: ${postId}`);
+  await prisma.posts.delete({
+    where: { id: postId },
+  });
+}
+
+async function createComment({ postId, userId, content }) {
+  console.log(`Adding comment to post ID: ${postId}`);
+  return await prisma.comments.create({
+    data: {
+      content: content,
+      posts: {
+        connect: { id: postId },
+      },
+      author: userId ? { connect: { id: userId } } : undefined,
+    },
+  });
+}
+
+async function deleteComment(commentId) {
+  console.log(`Deleting comment ID: ${commentId}`);
+  await prisma.comments.delete({
+    where: { id: commentId },
+  });
+}
+
 module.exports = {
   createUser,
   getUserByUsername,
@@ -99,4 +126,7 @@ module.exports = {
   getCommentsByPostId,
   createPost,
   updatePost,
+  deletePost,
+  createComment,
+  deleteComment,
 };

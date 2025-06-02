@@ -43,9 +43,26 @@ async function editPost(req, res, next) {
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    res.status(200).json({ message: "Post updated successfully", post });
+    res.status(200).json({
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+    });
   } catch (err) {
     console.error("Error editing post:", err);
+    next(err);
+  }
+}
+
+async function deletePost(req, res, next) {
+  try {
+    const postId = parseInt(req.params.id);
+    await db.deletePost(postId);
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting post:", err);
     next(err);
   }
 }
@@ -87,10 +104,47 @@ async function getCommentsByPostId(req, res, next) {
   }
 }
 
+async function createComment(req, res, next) {
+  try {
+    console.log("Adding comment:", req.body);
+    const { postId, userId, content } = req.body;
+    console.log("Post ID:", postId, "User ID:", userId, "Content:", content);
+    const comment = await db.createComment({
+      postId,
+      userId,
+      content,
+    });
+    res.status(201).json({
+      id: comment.id,
+      content: comment.content,
+      createdAt: comment.createdAt,
+      updatedAt: comment.updatedAt,
+      author: comment.author,
+    });
+  } catch (err) {
+    console.error("Error adding comment:", err);
+    next(err);
+  }
+}
+
+async function deleteComment(req, res, next) {
+  try {
+    const commentId = parseInt(req.params.id);
+    await db.deleteComment(commentId);
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting comment:", err);
+    next(err);
+  }
+}
+
 module.exports = {
   getPosts,
   getPostById,
   getCommentsByPostId,
   addPost,
   editPost,
+  deletePost,
+  createComment,
+  deleteComment,
 };

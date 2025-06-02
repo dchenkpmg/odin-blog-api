@@ -40,8 +40,8 @@ model Posts {
 
 model Comments {
   id        Int      @id @default(autoincrement())
-  authorId  Int
-  author    Users    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  author    Users?   @relation(fields: [authorId], references: [id])
   postId    Int
   posts     Posts    @relation(fields: [postId], references: [id])
   content   String
