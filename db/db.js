@@ -33,6 +33,21 @@ async function getPosts() {
   return posts;
 }
 
+async function getPublicPosts() {
+  console.log("Fetching all public posts with authors...");
+  const posts = await prisma.posts.findMany({
+    where: { published: true },
+    include: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+  return posts;
+}
+
 async function getPostById(postId) {
   console.log(`Fetching post by ID: ${postId}`);
   return await prisma.posts.findUnique({
@@ -122,6 +137,7 @@ module.exports = {
   createUser,
   getUserByUsername,
   getPosts,
+  getPublicPosts,
   getPostById,
   getCommentsByPostId,
   createPost,

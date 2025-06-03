@@ -19,6 +19,25 @@ async function getPosts(req, res, next) {
   }
 }
 
+async function getPublicPosts(req, res, next) {
+  try {
+    const posts = await db.getPublicPosts();
+    res.status(200).json(
+      posts.map((post) => ({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        author: post.author,
+        published: post.published,
+      })),
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function addPost(req, res, next) {
   try {
     const { title, content, userId, published } = req.body;
@@ -119,7 +138,7 @@ async function createComment(req, res, next) {
       content: comment.content,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
-      author: comment.author,
+      author: comment.authorId,
     });
   } catch (err) {
     console.error("Error adding comment:", err);
@@ -140,6 +159,7 @@ async function deleteComment(req, res, next) {
 
 module.exports = {
   getPosts,
+  getPublicPosts,
   getPostById,
   getCommentsByPostId,
   addPost,

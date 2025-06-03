@@ -10,13 +10,6 @@ async function adminRegister(req, res, next) {
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    const existingUser = await db.getUserByUsername(req.body.username);
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-    if (req.body.adminCode !== process.env.ADMIN_CODE) {
-      return res.status(400).json({ message: "Invalid admin code" });
-    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     await db.createUser(
       req.body.username,
